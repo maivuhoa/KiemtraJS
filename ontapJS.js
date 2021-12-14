@@ -1,10 +1,11 @@
 var vToday = new Date();
 let taskArray=[];
 class TaskItem{
-    constructor(title,deadline,isNormalLevel){
+    constructor(title,deadline,isNormalLevel,intermediate){
         this.title=title;
         this.deadline=deadline;
         this.isNormalLevel=isNormalLevel;
+        this.intermediate=intermediate;
     }
 }
 const getEl = (el) => {
@@ -25,8 +26,9 @@ const submitValue=()=>{
     console.log("date",dateValue);
     const levelValue=getEl('#levelTask').value;
     console.log("levelValue",levelValue);
+    const intermediateValue=getEl('#intermediate').value;
 
-   const task=new TaskItem(taskValue,dateValue,levelValue);
+   const task=new TaskItem(taskValue,dateValue,levelValue==='normal',intermediateValue);
 
     if(!taskValue) return alert("Vui long nhap title!");
     
@@ -38,6 +40,10 @@ const submitValue=()=>{
     if(vToday.getDate()>day) return alert("Day must be bigger than current day !");  
     taskArray=[...taskArray,task];
     displayTask(taskArray);
+    localStorage.setItem('taskArrayinLocalStorage', JSON.stringify(taskArray));
+
+
+
 };
 const displayTask=(levelTask)=>{
     let listTaskElement='';
@@ -50,14 +56,18 @@ const displayTask=(levelTask)=>{
                 case 'urgent':
                     isDisplay= !task.isNormalLevel;
                 break;
+                case 'intermediate':
+                    isDisplay= task.intermediateValue;
+                break;
                 default :
                     isDisplay=true;
             }
             if(isDisplay){
                 listTaskElement= listTaskElement+`<div class="taskCard">Title:${task.title}
                 <br> Deadline:${task.deadline}
-                <br>Level Taks:${task.isNormalLevel ? 'NORMAL' : 'URGENT'}
-                </div>`
+                <br>Level Task:${task.isNormalLevel ? 'NORMAL' : 'URGENT'}
+                </div>`+`<div class="deleteTask">X`
+                
             }
         }
         getEl('#taskList').innerHTML=listTaskElement;
@@ -65,5 +75,6 @@ const displayTask=(levelTask)=>{
 getEl('#submit').onclick=submitValue;
 getEl('ul > li:first-child').onclick=displayTask;
 getEl('ul > li:nth-child(2)').onclick= () =>displayTask('normal');
-getEl('ul > li:last-child').onclick= () =>displayTask('urgent');
+getEl('ul > li:nth-child(3)').onclick= () =>displayTask('urgent');
+getEl('ul > li:last-child').onclick= () =>displayTask('intermediate');
 
