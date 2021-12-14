@@ -1,43 +1,69 @@
-var vToday=new Date();
-console.log("Today",vToday);
-let taskArr = [];
-const submitTask = () => {
-    let taskValue = document.getElementById("task").value.trim();
-    let dateValue=document.getElementById("date").value;
-    let isNormalLevel =document.getElementById("idSelect").value;  
-    console.log(taskValue,dateValue,isNormalLevel);
-    if(!taskValue){
-        alert("Vui Lòng nhập Tasks !")
-        return ;
-    }
-    if(dateValue<vToday){
-        alert("Deadline phải lớn hơn hoặc bằng ngày hôm nay !")
-        return ;
-    }
-    let tasks = {
-        taskValue: taskValue,
-        dateValue:dateValue,
-        isNormalLevel:isNormalLevel,
-    }
-    taskArr = [...taskArr, tasks];
-    console.log("taskArr", taskArr);
-
-    let taskTable = '';
-
-    for (const task of taskArr) {
-        taskRow = `<p> ${task.taskValue} </p>`+
-        `<p> ${task.dateValue} </p>`+
-        `<p> ${task.isNormalLevel} </p>`
-        ;
-        taskTable = taskTable + taskRow;
-        console.log("userRow", taskRow)
-        document.querySelector("#listTableChild").innerHTML = taskTable;
-
-       //   width: 250px;
-    //height: 100px;
-   // border: 1px solid black;
+var vToday = new Date();
+let taskArray=[];
+class TaskItem{
+    constructor(title,deadline,isNormalLevel){
+        this.title=title;
+        this.deadline=deadline;
+        this.isNormalLevel=isNormalLevel;
     }
 }
+const getEl = (el) => {
+    return document.querySelector(el);
+};
+const compareDate =(value)=>{
+    const year= parseInt(value.substring(0,4));
+    const month=parseInt(value.substring(5,7));
+    const day=parseInt(value.substring(8,10));
+    if(vToday.getFullYear()>year) return alert("Year must be bigger than current year !");  
+    if(vToday.getMonth() + 1 >month) return alert("Month must be bigger than current month !");  
+    if(vToday.getDate()>day) return alert("Day must be bigger than current day !");  
+}
+const submitValue=()=>{
+    const taskValue=getEl('#task').value.trim();
+    console.log("task",taskValue);
+    const dateValue=getEl('#date').value;
+    console.log("date",dateValue);
+    const levelValue=getEl('#levelTask').value;
+    console.log("levelValue",levelValue);
 
+   const task=new TaskItem(taskValue,dateValue,levelValue);
 
-document.getElementById("submit").onclick = submitTask;
+    if(!taskValue) return alert("Vui long nhap title!");
+    
+    const year= parseInt(dateValue.substring(0,4));
+    const month=parseInt(dateValue.substring(5,7));
+    const day=parseInt(dateValue.substring(8,10));
+    if(vToday.getFullYear()>year) return alert("Year must be bigger than current year !");  
+    if(vToday.getMonth() + 1 >month) return alert("Month must be bigger than current month !");  
+    if(vToday.getDate()>day) return alert("Day must be bigger than current day !");  
+    taskArray=[...taskArray,task];
+    displayTask(taskArray);
+};
+const displayTask=(levelTask)=>{
+    let listTaskElement='';
+        for(let task of taskArray){
+            let isDisplay=false;
+            switch(levelTask){
+                case 'normal':
+                    isDisplay=task.isNormalLevel;
+                break;    
+                case 'urgent':
+                    isDisplay= !task.isNormalLevel;
+                break;
+                default :
+                    isDisplay=true;
+            }
+            if(isDisplay){
+                listTaskElement= listTaskElement+`<div class="taskCard">Title:${task.title}
+                <br> Deadline:${task.deadline}
+                <br>Level Taks:${task.isNormalLevel ? 'NORMAL' : 'URGENT'}
+                </div>`
+            }
+        }
+        getEl('#taskList').innerHTML=listTaskElement;
+};
+getEl('#submit').onclick=submitValue;
+getEl('ul > li:first-child').onclick=displayTask;
+getEl('ul > li:nth-child(2)').onclick= () =>displayTask('normal');
+getEl('ul > li:last-child').onclick= () =>displayTask('urgent');
+

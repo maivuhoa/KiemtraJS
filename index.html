@@ -11,16 +11,16 @@
 <body>
     <div class="all-div">
     <div class="form-user">
-        <a href="">All</a>
-        <a href="">Normal</a>
-        <a href="">Urgent</a>
+      <ul id="navigatorTab">
+        <li>All</li>
+        <li>Normal</li>
+        <li>Urgent</li>
+
+
+      </ul>
     </div>
     <br>
-    <div class="list-task">
-        <h3>List Tasks</h3>
-        <div id="listTable">
-            <div id="listTableChild"></div>
-        </div>
+    <div id="taskList">
     </div>
     <div class="form-user">
         <h3>Form user</h3>
@@ -29,9 +29,10 @@
         <label for="">Date</label>
         <input type="date" id="date">
         <label for="">Level</label>
-        <select id="idSelect">
-            <option id="true" value="Normal">Normal</option>
-            <option id="false" value="Urgent">Urgent</option>
+        <select value="normal" id="levelTask">
+            <option  value="normal">Normal</option>
+            <option  value="urgent">Urgent</option>
+            <option id="intermediate" value="intermediate">intermediate</option>
         </select>
        
         <button id="submit">Submit</button>
